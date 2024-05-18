@@ -22,9 +22,13 @@ The page will reload when you make changes.
 
 ## Example view app
 
+### Desktop view
+
 <div style='display: flex; flex-wrap: nowrap; overflow-x: auto'>
     <img src='./examples/example-desktop.png' alt='example-mobile-3' style='width: 700px; height: auto; margin-right: 10px'>
 </div>
+
+### Mobile view
 
 <div style='display: flex; flex-wrap: nowrap; overflow-x: auto; margin-top: 10px'>
     <img src='./examples/example-mobile-1.png' alt='example-mobile-1' style='width: 250px; height: auto; margin-right: 10px'>
