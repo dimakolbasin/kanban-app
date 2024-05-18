@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+  scroll-behavior: smooth;
+}
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
+input {
+  transition: border-color 0.5s;
+}
+
+input:focus-visible {
+  border-color: blue;
+  outline: none;
+}
+
+.error .input-errors {
+  color: red;
+}
+
+button {
+  background-color: #f5f0f0;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.5s;
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+@media not all and (pointer:coarse) {
+  button:not(:disabled):hover {
+    border-color: #646cff;
+  }
+}
+
+@media (pointer:coarse) {
+  button:not(:disabled):active {
+    border-color: #646cff;
+  }
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
