@@ -23,7 +23,7 @@ const moveTaskToColumn = (task: Task, toColumn: string) => {
 <template>
   <select
     class="custom-select border border-gray-400 border-2 rounded-md p-2 w-full mt-4"
-    @change="moveTaskToColumn(task, $event?.target?.value)"
+    @change="moveTaskToColumn(task, ($event.target as HTMLSelectElement).value)"
   >
     <option
       disabled
