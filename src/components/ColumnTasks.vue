@@ -10,6 +10,8 @@ const MobileSelectColumn = defineAsyncComponent(() => import('~/components/Mobil
 const MobileManagePriority = defineAsyncComponent(() => import('~/components/MobileManagePriority.vue'))
 const generalStore = useGeneralStore()
 
+console.log('')
+
 const DATA_TASK = 'task'
 const DATA_FROM_COLUMN = 'fromColumn'
 const ITEM_TARGET_CLASS = 'item-target'
