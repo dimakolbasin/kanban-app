@@ -7,6 +7,7 @@ const useGeneralStore = defineStore(NAME_STORE, {
   state,
   actions,
   persist: {
+    // Data(columnTasks) persists from pinia to localStorage
     paths: ['columnTasks']
   }
 })
