@@ -16,6 +16,12 @@ const ITEM_TARGET_CLASS = 'item-target'
 const DISABLED_HIGHLIGHT_CLASS = 'not-highlight'
 const HIGHLIGHT_CLASS = 'highlight'
 
+const ITEM_TEXT_BLOCK_CLASS = 'item-text-block'
+const ITEM_ID_CLASS = 'item-id-block'
+const ITEM_TITLE_CLASS = 'item-title-block'
+const ITEM_DESCRIPTION_CLASS = 'item-description-block'
+const ITEM_DELIMITER_CLASS = 'item-delimiter-block'
+
 const tasksColumn = computed(() => generalStore.columnTasks)
 
 const onDragStart = (event: DragEvent, task: Task, columnName: ColumnName) => {
@@ -47,14 +53,16 @@ const changePriorityFromOneColumn = (task: Task, targetId: string, toColumn: Col
   }
 }
 
-const moveTaskBetweenColumns = (task: Task, fromColumn: ColumnName, toColumn: ColumnName, targetIndex: string) => {
+const moveTaskBetweenColumns = (task: Task, fromColumn: ColumnName, toColumn: ColumnName, targetId: string) => {
   const fromColumnTasks = generalStore.columnTasks[fromColumn].filter(item => item.id !== task.id)
   generalStore.updateColumnList(fromColumn, fromColumnTasks)
+  const targetIndex = generalStore.columnTasks[toColumn].findIndex(item => item.id === targetId)
+  const index = targetIndex === -1 ? 0 : +targetIndex
 
   const toColumnTasks = [
-    ...generalStore.columnTasks[toColumn].slice(0, +targetIndex),
+    ...generalStore.columnTasks[toColumn].slice(0, index),
     task,
-    ...generalStore.columnTasks[toColumn].slice(+targetIndex)
+    ...generalStore.columnTasks[toColumn].slice(index)
   ]
   generalStore.updateColumnList(toColumn, toColumnTasks)
 }
@@ -65,13 +73,13 @@ const onDrop = (event: DragEvent, toColumn: ColumnName) => {
 
   const task: Task = JSON.parse(dataTransfer.getData(DATA_TASK) || '{}')
   const fromColumn = dataTransfer.getData(DATA_FROM_COLUMN) || ''
-  const targetIndex = (event.target as HTMLElement).dataset.index || '0'
   const targetId = (event.target as HTMLElement).dataset.id || '0'
+  if (fromColumn === toColumn && !+targetId) return
 
   if (fromColumn === toColumn) {
     changePriorityFromOneColumn(task, targetId, toColumn)
   } else {
-    moveTaskBetweenColumns(task, (fromColumn as ColumnName), toColumn, targetIndex)
+    moveTaskBetweenColumns(task, (fromColumn as ColumnName), toColumn, targetId)
   }
 }
 
@@ -83,11 +91,35 @@ const onDragEnter = (event: DragEvent) => {
     target.classList.add(HIGHLIGHT_CLASS)
     currentHoverElement.value = target
   }
+
+  if (target.classList.contains(ITEM_TEXT_BLOCK_CLASS) || target.classList.contains(ITEM_DELIMITER_CLASS)) {
+    const parentElement = target.parentElement
+    if (parentElement) {
+      parentElement.classList.add(HIGHLIGHT_CLASS)
+      currentHoverElement.value = parentElement
+    }
+  } else if (
+    target.classList.contains(ITEM_ID_CLASS) ||
+    target.classList.contains(ITEM_TITLE_CLASS) ||
+    target.classList.contains(ITEM_DESCRIPTION_CLASS)
+  ) {
+    const grandParentElement = target.parentElement?.parentElement
+    if (grandParentElement) {
+      grandParentElement.classList.add(HIGHLIGHT_CLASS)
+      currentHoverElement.value = grandParentElement
+    }
+  }
 }
 
 const onDragLeave = (event: DragEvent) => {
   const target = event.target as HTMLElement
-  if (target.classList.contains(ITEM_TARGET_CLASS) && target === event.currentTarget) {
+  const relatedTarget = event.relatedTarget as HTMLElement
+
+  if (
+    target.classList.contains(ITEM_TARGET_CLASS) &&
+    target === event.currentTarget &&
+    (!relatedTarget || !target.contains(relatedTarget))
+  ) {
     target.classList.remove(HIGHLIGHT_CLASS)
   }
 }
@@ -99,6 +131,7 @@ const onDragEnd = (event: DragEvent) => {
     target.classList.remove(DISABLED_HIGHLIGHT_CLASS)
   }
   currentHoverElement.value?.classList.remove(HIGHLIGHT_CLASS)
+  currentHoverElement.value = null
 }
 
 </script>
@@ -122,27 +155,40 @@ const onDragEnd = (event: DragEvent) => {
           :key="task.id"
           :data-id="task.id"
           class="item-target p-4 my-4 bg-green-50 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg md:cursor-move"
-          :draggable="true"
+          :draggable="!isTouchDevice"
           @dragstart="onDragStart($event, task, columnName)"
           @dragenter="onDragEnter"
           @dragleave="onDragLeave"
           @dragend="onDragEnd"
         >
-          <div class="flex flex-col w-fit">
-            <span class="w-fit max-w-52 lg:max-w-96 overflow-ellipsis overflow-hidden text-gray-500">
+          <div class="item-text-block flex flex-col w-fit">
+            <span
+              :data-id="task.id"
+              class="item-id-block w-fit max-w-52 lg:max-w-96 overflow-ellipsis overflow-hidden text-gray-500"
+            >
               #: {{ task.id }}
             </span>
-            <span class="text-xl md:text-2xl font-semibold w-fit max-w-52 lg:max-w-96 overflow-ellipsis overflow-hidden">
+            <span
+              :data-id="task.id"
+              class="item-title-block text-xl md:text-2xl font-semibold w-fit max-w-52 lg:max-w-96 overflow-ellipsis overflow-hidden"
+            >
               {{ task.title }}
             </span>
-            <span class="mt-2 text-base md:text-xl w-fit max-w-52 lg:max-w-96 overflow-ellipsis overflow-hidden text-gray-600">
+            <span
+              :data-id="task.id"
+              class="item-description-block mt-2 text-base md:text-xl w-fit max-w-52 lg:max-w-96 overflow-ellipsis overflow-hidden text-gray-600"
+            >
               {{ task.description }}
             </span>
           </div>
 
-          <div class="mt-4 mb-4 border-b border-gray-300" />
+          <div
+            :data-id="task.id"
+            class="item-delimiter-block mt-4 mb-4 border-b border-gray-300"
+          />
 
           <ManageTask
+            :data-id="task.id"
             :task="task"
             :column-name="columnName"
           />
