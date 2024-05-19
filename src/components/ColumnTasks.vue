@@ -104,11 +104,11 @@ const onDragEnd = (event: DragEvent) => {
 </script>
 
 <template>
-  <div class="flex justify-between w-full">
+  <div class="flex justify-between w-full gap-x-2">
     <div
       v-for="(tasks, columnName) in tasksColumn"
       :key="columnName"
-      class="p-2 border border-gray-300 grow shrink-0 w-full md:w-1/3"
+      class="p-2 border border-gray-300 grow shrink-0 w-full md:w-1/3 rounded-lg shadow-md bg-white"
       @dragover.prevent
       @dragenter.prevent
       @drop="onDrop($event, columnName)"
