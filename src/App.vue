@@ -8,7 +8,7 @@ const generalState = useGeneralStore()
 </script>
 
 <template>
-  <div class="container max-w-full pr-8">
+  <div class="container max-w-full">
     <MainHeader />
 
     <ColumnTasks />
