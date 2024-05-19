@@ -3,7 +3,7 @@ import { computed, onMounted, onUnmounted, reactive } from 'vue'
 import { useVuelidate } from '@vuelidate/core'
 import { required, minLength, helpers } from '@vuelidate/validators'
 import useGeneralStore from '~/stores/general'
-import { isTouchDevice } from '~/utils'
+import { isMobileTablet } from '~/utils'
 const generalStore = useGeneralStore()
 
 const MIN_LENGTH_FOR_TITLE = 3
@@ -32,7 +32,7 @@ const handleKeydown = (event: KeyboardEvent) => {
 }
 
 onMounted(() => {
-  if (!isTouchDevice.value) window.addEventListener('keydown', handleKeydown)
+  if (!isMobileTablet.value) window.addEventListener('keydown', handleKeydown)
   if (changeModal.value) {
     state.title = changeModal.value.currentTitle
     state.description = changeModal.value.currentDescription
@@ -40,7 +40,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  if (!isTouchDevice.value) window.removeEventListener('keydown', handleKeydown)
+  if (!isMobileTablet.value) window.removeEventListener('keydown', handleKeydown)
   generalStore.modalChangeUpdateState(null)
 })
 

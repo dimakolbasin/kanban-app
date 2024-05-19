@@ -2,7 +2,7 @@
 import CreateChangeTask from '~/components/CreateChangeTask.vue'
 import useGeneralStore from '~/stores/general'
 import { onBeforeMount, onUnmounted } from 'vue'
-import { isTouchDevice } from '~/utils'
+import { isMobileTablet } from '~/utils'
 const generalStore = useGeneralStore()
 
 const handleKeydown = (event: KeyboardEvent) => {
@@ -10,7 +10,7 @@ const handleKeydown = (event: KeyboardEvent) => {
 }
 
 onBeforeMount(() => {
-  if (!isTouchDevice.value) window.addEventListener('keydown', handleKeydown)
+  if (!isMobileTablet.value) window.addEventListener('keydown', handleKeydown)
   document.documentElement.style.overflowX = 'hidden'
   document.documentElement.style.overflowY = 'hidden'
   document.body.style.overflowX = 'hidden'
@@ -18,7 +18,7 @@ onBeforeMount(() => {
 })
 
 onUnmounted(() => {
-  if (!isTouchDevice.value) window.removeEventListener('keydown', handleKeydown)
+  if (!isMobileTablet.value) window.removeEventListener('keydown', handleKeydown)
   document.documentElement.style.overflowX = 'auto'
   document.documentElement.style.overflowY = 'auto'
   document.body.style.overflowX = 'auto'

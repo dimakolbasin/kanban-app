@@ -3,7 +3,7 @@ import ManageTask from '~/components/ManageTask.vue'
 import { computed, defineAsyncComponent, ref } from 'vue'
 import useGeneralStore from '~/stores/general'
 import { cloneDeep } from 'lodash'
-import { isTouchDevice } from '~/utils'
+import { isMobileTablet } from '~/utils'
 import { ColumnName, Task } from '~/stores/general/interfaces/state.interface.ts'
 
 const MobileSelectColumn = defineAsyncComponent(() => import('~/components/MobileSelectColumn.vue'))
@@ -155,7 +155,7 @@ const onDragEnd = (event: DragEvent) => {
           :key="task.id"
           :data-id="task.id"
           class="item-target p-4 my-4 bg-green-50 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg md:cursor-move"
-          :draggable="!isTouchDevice"
+          :draggable="!isMobileTablet"
           @dragstart="onDragStart($event, task, columnName)"
           @dragenter="onDragEnter"
           @dragleave="onDragLeave"
@@ -164,19 +164,19 @@ const onDragEnd = (event: DragEvent) => {
           <div class="item-text-block flex flex-col w-fit">
             <span
               :data-id="task.id"
-              class="item-id-block w-fit max-w-52 lg:max-w-96 overflow-ellipsis overflow-hidden text-gray-500"
+              class="item-id-block w-fit max-w-52 lg:max-w-72 xl:max-w-96 overflow-ellipsis overflow-hidden text-gray-500"
             >
               #: {{ task.id }}
             </span>
             <span
               :data-id="task.id"
-              class="item-title-block text-xl md:text-2xl font-semibold w-fit max-w-52 lg:max-w-96 overflow-ellipsis overflow-hidden"
+              class="item-title-block text-nowrap mt-2 text-xl md:text-2xl font-semibold w-fit max-w-52 lg:max-w-72 xl:max-w-96 overflow-ellipsis overflow-hidden"
             >
               {{ task.title }}
             </span>
             <span
               :data-id="task.id"
-              class="item-description-block mt-2 text-base md:text-xl w-fit max-w-52 lg:max-w-96 overflow-ellipsis overflow-hidden text-gray-600"
+              class="item-description-block text-nowrap mt-2 text-base md:text-xl w-fit max-w-52 lg:max-w-72 xl:max-w-96 overflow-ellipsis overflow-hidden text-gray-600"
             >
               {{ task.description }}
             </span>
@@ -192,7 +192,7 @@ const onDragEnd = (event: DragEvent) => {
             :task="task"
             :column-name="columnName"
           />
-          <template v-if="isTouchDevice">
+          <template v-if="isMobileTablet">
             <MobileSelectColumn
               :task="task"
               :tasks-column="tasksColumn"
