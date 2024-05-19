@@ -1,17 +1,17 @@
 <script setup lang='ts'>
 import useGeneralStore from '~/stores/general'
 import { defineProps } from 'vue'
-import { Task } from '~/stores/general/interfaces.ts'
+import { ColumnName, Task } from '~/stores/general/interfaces/state.interface.ts'
 const generalStore = useGeneralStore()
-const { task, name } = defineProps<{ task: Task, name: string }>()
+const { task, columnName } = defineProps<{ task: Task, columnName: ColumnName }>()
 
-const editTask = (task: Task, name: string) => {
-  generalStore.modalChangeUpdateState({ id: task.id, columnName: name, currentTitle: task.title, currentDescription: task.description })
+const editTask = (task: Task, columnName: ColumnName) => {
+  generalStore.modalChangeUpdateState({ id: task.id, columnName, currentTitle: task.title, currentDescription: task.description })
   generalStore.changeModalState(true)
 }
 
-const deleteTask = (task: Task, name: string) => {
-  if (confirm(`Are you sure you want to delete this task - #${task.id}?`)) generalStore.deleteTask(task.id, name)
+const deleteTask = (task: Task, columnName: ColumnName) => {
+  if (confirm(`Are you sure you want to delete this task - #${task.id}?`)) generalStore.deleteTask(task.id, columnName)
 }
 
 </script>
@@ -20,13 +20,13 @@ const deleteTask = (task: Task, name: string) => {
   <div class="flex gap-x-2">
     <button
       class="w-full"
-      @click="editTask(task, name)"
+      @click="editTask(task, columnName)"
     >
       Edit task
     </button>
     <button
       class="w-full"
-      @click="deleteTask(task, name)"
+      @click="deleteTask(task, columnName)"
     >
       Delete task
     </button>

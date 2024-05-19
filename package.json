@@ -8,10 +8,12 @@
     "build": "vue-tsc && vite build",
     "preview": "vite preview",
     "lint": "eslint --ext .ts,.vue src --max-warnings 0",
-    "lint:fix": "eslint --ext .ts,.vue src --max-warnings 0 --fix"
+    "lint:fix": "eslint --ext .ts,.vue src --max-warnings 0 --fix",
+    "type-check": "vue-tsc --noEmit"
   },
   "pre-commit": [
-    "lint"
+    "lint",
+    "type-check"
   ],
   "dependencies": {
     "@vuelidate/core": "^2.0.3",

@@ -1,15 +1,9 @@
 <script setup lang='ts'>
 import useGeneralStore from '~/stores/general'
-import { Task } from '~/stores/general/interfaces.ts'
+import { ColumnName, Task } from '~/stores/general/interfaces/state.interface.ts'
 const generalStore = useGeneralStore()
 
-const { tasks, positionIndex, nameColumn } = defineProps<{ tasks: Task[], positionIndex: number, nameColumn: string }>()
-
-// const moveTask = (fromIndex: number, toIndex: number) => {
-//   const [task] = tasks.splice(fromIndex, 1)
-//   tasks.splice(toIndex, 0, task)
-//   generalStore.updateColumnList(nameColumn, [...tasks])
-// }
+const { tasks, positionIndex, nameColumn } = defineProps<{ tasks: Task[], positionIndex: number, nameColumn: ColumnName }>()
 
 const moveTask = (fromIndex: number, toIndex: number) => {
   const task = tasks[fromIndex]

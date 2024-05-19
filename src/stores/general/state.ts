@@ -1,4 +1,4 @@
-import type { State } from '~/stores/general/typesStore'
+import { State } from '~/stores/general/interfaces/state.interface.ts'
 
 const state = (): State => ({
   columnTasks: {

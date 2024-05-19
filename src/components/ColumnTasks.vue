@@ -2,9 +2,9 @@
 import ManageTask from '~/components/ManageTask.vue'
 import { computed, defineAsyncComponent, ref } from 'vue'
 import useGeneralStore from '~/stores/general'
-import { Task } from '~/stores/general/interfaces.ts'
 import { cloneDeep } from 'lodash'
 import { isTouchDevice } from '~/utils'
+import { ColumnName, Task } from '~/stores/general/interfaces/state.interface.ts'
 
 const MobileSelectColumn = defineAsyncComponent(() => import('~/components/MobileSelectColumn.vue'))
 const MobileManagePriority = defineAsyncComponent(() => import('~/components/MobileManagePriority.vue'))
@@ -16,9 +16,9 @@ const ITEM_TARGET_CLASS = 'item-target'
 const DISABLED_HIGHLIGHT_CLASS = 'not-highlight'
 const HIGHLIGHT_CLASS = 'highlight'
 
-const tasksColumn = computed<Record<string, Task[]>>(() => generalStore.columnTasks)
+const tasksColumn = computed(() => generalStore.columnTasks)
 
-const onDragStart = (event: DragEvent, task: Task, column: string) => {
+const onDragStart = (event: DragEvent, task: Task, columnName: ColumnName) => {
   const dataTransfer = event.dataTransfer
   const target = event.target as HTMLElement
   if (target.classList.contains(ITEM_TARGET_CLASS) && target === event.currentTarget) {
@@ -27,11 +27,11 @@ const onDragStart = (event: DragEvent, task: Task, column: string) => {
   }
   if (dataTransfer) {
     dataTransfer.setData(DATA_TASK, JSON.stringify(task))
-    dataTransfer.setData(DATA_FROM_COLUMN, column)
+    dataTransfer.setData(DATA_FROM_COLUMN, columnName)
   }
 }
 
-const changePriorityFromOneColumn = (task: Task, targetId: string, toColumn: string) => {
+const changePriorityFromOneColumn = (task: Task, targetId: string, toColumn: ColumnName) => {
   const dropTaskId = task.id
   const tasks = generalStore.columnTasks[toColumn]
 
@@ -47,8 +47,8 @@ const changePriorityFromOneColumn = (task: Task, targetId: string, toColumn: str
   }
 }
 
-const moveTaskBetweenColumns = (task: Task, fromColumn: string, toColumn: string, targetIndex: string) => {
-  const fromColumnTasks = generalStore.columnTasks[fromColumn].filter(t => t.id !== task.id)
+const moveTaskBetweenColumns = (task: Task, fromColumn: ColumnName, toColumn: ColumnName, targetIndex: string) => {
+  const fromColumnTasks = generalStore.columnTasks[fromColumn].filter(item => item.id !== task.id)
   generalStore.updateColumnList(fromColumn, fromColumnTasks)
 
   const toColumnTasks = [
@@ -59,7 +59,7 @@ const moveTaskBetweenColumns = (task: Task, fromColumn: string, toColumn: string
   generalStore.updateColumnList(toColumn, toColumnTasks)
 }
 
-const onDrop = (event: DragEvent, toColumn: string) => {
+const onDrop = (event: DragEvent, toColumn: ColumnName) => {
   const dataTransfer = event.dataTransfer
   if (!dataTransfer) return
 
@@ -71,7 +71,7 @@ const onDrop = (event: DragEvent, toColumn: string) => {
   if (fromColumn === toColumn) {
     changePriorityFromOneColumn(task, targetId, toColumn)
   } else {
-    moveTaskBetweenColumns(task, fromColumn, toColumn, targetIndex)
+    moveTaskBetweenColumns(task, (fromColumn as ColumnName), toColumn, targetIndex)
   }
 }
 
@@ -106,15 +106,15 @@ const onDragEnd = (event: DragEvent) => {
 <template>
   <div class="flex justify-between w-full">
     <div
-      v-for="(tasks, name) in tasksColumn"
-      :key="name"
+      v-for="(tasks, columnName) in tasksColumn"
+      :key="columnName"
       class="p-2 border border-gray-300 grow shrink-0 w-full md:w-1/3"
       @dragover.prevent
       @dragenter.prevent
-      @drop="onDrop($event, name)"
+      @drop="onDrop($event, columnName)"
     >
       <h1 class="text-center text-4xl">
-        {{ name }}
+        {{ columnName }}
       </h1>
       <div class="min-h-[200px]">
         <div
@@ -123,7 +123,7 @@ const onDragEnd = (event: DragEvent) => {
           :data-id="task.id"
           class="item-target p-4 my-4 bg-green-50 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg md:cursor-move"
           :draggable="true"
-          @dragstart="onDragStart($event, task, name)"
+          @dragstart="onDragStart($event, task, columnName)"
           @dragenter="onDragEnter"
           @dragleave="onDragLeave"
           @dragend="onDragEnd"
@@ -144,18 +144,18 @@ const onDragEnd = (event: DragEvent) => {
 
           <ManageTask
             :task="task"
-            :name="name"
+            :column-name="columnName"
           />
           <template v-if="isTouchDevice">
             <MobileSelectColumn
               :task="task"
               :tasks-column="tasksColumn"
-              :from-column="name"
+              :from-column="columnName"
             />
             <MobileManagePriority
               :tasks="tasks"
               :position-index="index"
-              :name-column="name"
+              :name-column="columnName"
             />
           </template>
         </div>

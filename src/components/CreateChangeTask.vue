@@ -6,6 +6,9 @@ import useGeneralStore from '~/stores/general'
 import { isTouchDevice } from '~/utils'
 const generalStore = useGeneralStore()
 
+const MIN_LENGTH_FOR_TITLE = 3
+const MIN_LENGTH_FOR_DESCRIPTION = 3
+
 const state = reactive({
   title: '',
   description: ''
@@ -14,11 +17,11 @@ const state = reactive({
 const rules = {
   title: {
     required: helpers.withMessage('Title is required', required),
-    minLength: helpers.withMessage('Title minimum 3 characters', minLength(3))
+    minLength: helpers.withMessage(`Title minimum ${MIN_LENGTH_FOR_TITLE} characters`, minLength(MIN_LENGTH_FOR_TITLE))
   },
   description: {
     required: helpers.withMessage('Description is required', required),
-    minLength: helpers.withMessage('Description minimum 3 characters', minLength(3))
+    minLength: helpers.withMessage(`Description minimum ${MIN_LENGTH_FOR_DESCRIPTION} characters`, minLength(MIN_LENGTH_FOR_DESCRIPTION))
   }
 }
 
@@ -60,9 +63,9 @@ const changeTodo = () => {
   if (!v$.value?.$invalid && changeModal.value?.id && changeModal.value?.columnName) {
     const todo = {
       id: changeModal.value?.id,
-      name: changeModal.value?.columnName,
-      newTitle: state.title,
-      newDescription: state.description
+      columnName: changeModal.value?.columnName,
+      currentTitle: state.title,
+      currentDescription: state.description
     }
 
     generalStore.editTask(todo)
@@ -107,7 +110,7 @@ const manageTodo = () => {
         class="border rounded-md border-gray-400 p-2 w-full"
         type="text"
         placeholder="Add title..."
-        @input="v$.title.$touch()"
+        @blur="v$.title.$touch"
       >
       <div
         v-for="error of v$.title.$errors"
@@ -125,7 +128,7 @@ const manageTodo = () => {
         class="border rounded-md border-gray-400 p-2 w-full"
         type="text"
         placeholder="Add description..."
-        @input="v$.description.$touch()"
+        @blur="v$.description.$touch"
       >
       <div
         v-for="error of v$.description.$errors"
@@ -142,7 +145,6 @@ const manageTodo = () => {
         :disabled="v$.title.$invalid && v$.title.$dirty || v$.description.$invalid && v$.description.$dirty"
         class="w-full"
         :class="{'disabled': v$.$invalid}"
-        tabindex="0"
         @click="manageTodo"
       >
         {{ changeModal ? 'Change task' : 'Create task' }}

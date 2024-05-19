@@ -1,14 +1,15 @@
 <script setup lang='ts'>
 import useGeneralStore from '~/stores/general'
-import { Task } from '~/stores/general/interfaces.ts'
 import { cloneDeep } from 'lodash'
+import { ColumnName, Task } from '~/stores/general/interfaces/state.interface.ts'
+import { computed } from 'vue'
 const generalStore = useGeneralStore()
 
-const { task, fromColumn, tasksColumn } = defineProps<{ task: Task, fromColumn: string, tasksColumn: Record<string, Task[]> }>()
+const { task, fromColumn, tasksColumn } = defineProps<{ task: Task, fromColumn: ColumnName, tasksColumn: Record<ColumnName, Task[]> }>()
 
-const moveTaskToColumn = (task: Task, toColumn: string) => {
+const moveTaskToColumn = (task: Task, toColumn: ColumnName) => {
   if (fromColumn !== toColumn) {
-    const fromColumnTasks = generalStore.columnTasks[fromColumn].filter(t => t.id !== task.id)
+    const fromColumnTasks = generalStore.columnTasks[fromColumn].filter(item => item.id !== task.id)
     generalStore.updateColumnList(fromColumn, fromColumnTasks)
 
     const toColumnTasks = cloneDeep(generalStore.columnTasks[toColumn])
@@ -18,12 +19,14 @@ const moveTaskToColumn = (task: Task, toColumn: string) => {
   }
 }
 
+const filteredColumnName = computed(() => Object.keys(tasksColumn).filter(colName => colName !== fromColumn))
+
 </script>
 
 <template>
   <select
-    class="custom-select border border-gray-400 border-2 rounded-md p-2 w-full mt-4"
-    @change="moveTaskToColumn(task, ($event.target as HTMLSelectElement).value)"
+    class="border-2 select-none border-gray-400 rounded-md p-2 w-full mt-4"
+    @change="moveTaskToColumn(task, (($event.target as HTMLSelectElement).value) as ColumnName)"
   >
     <option
       disabled
@@ -31,16 +34,12 @@ const moveTaskToColumn = (task: Task, toColumn: string) => {
     >
       {{ fromColumn }}
     </option>
-    <template
-      v-for="(_, colName) in tasksColumn"
+    <option
+      v-for="colName in filteredColumnName"
       :key="colName"
+      :value="colName"
     >
-      <option
-        v-if="fromColumn !== colName"
-        :value="colName"
-      >
-        {{ colName }}
-      </option>
-    </template>
+      {{ colName }}
+    </option>
   </select>
 </template>
