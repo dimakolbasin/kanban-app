@@ -34,10 +34,10 @@ The page will reload when you make changes.
 ### Mobile view
 
 <div style='display: flex; flex-wrap: nowrap; overflow-x: auto; margin-top: 10px'>
-    <img src='./examples/example-mobile-1.png' alt='example-mobile-1' style='width: 250px; height: auto; margin-right: 10px'>
-    <img src='./examples/example-mobile-2.png' alt='example-mobile-2' style='width: 250px; height: auto; margin-right: 10px'>
+    <img src='./examples/example-mobile-1.png' alt='example-mobile-1' style='width: 250px; height: auto; margin-right: 10px; border: 1px solid black'>
+    <img src='./examples/example-mobile-2.png' alt='example-mobile-2' style='width: 250px; height: auto; margin-right: 10px; border: 1px solid black'>
 </div>
 <div style='display: flex; flex-wrap: nowrap; overflow-x: auto; margin-top: 10px'>
-    <img src='./examples/example-mobile-3.png' alt='example-mobile-3' style='width: 250px; height: auto; margin-right: 10px'>
-    <img src='./examples/example-mobile-4.png' alt='example-mobile-4' style='width: 250px; height: auto; margin-right: 10px'>
+    <img src='./examples/example-mobile-3.png' alt='example-mobile-3' style='width: 250px; height: auto; margin-right: 10px; border: 1px solid black'>
+    <img src='./examples/example-mobile-4.png' alt='example-mobile-4' style='width: 250px; height: auto; margin-right: 10px; border: 1px solid black'>
 </div>
