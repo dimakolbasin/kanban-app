@@ -1,6 +1,6 @@
 # Kanban app
 
-## https://dimakolbasin.github.io/kanban-app/
+## Work demo - https://dimakolbasin.github.io/kanban-app/
 
 ---
 
